@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyper NFT Market</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        
+        
+        :root {
+            --bg-primary: #121212;
+            --bg-secondary: #1E1E1E;
+            --bg-tertiary: #2A2A2A;
+            --text-primary: #EAEAEA;
+            --text-secondary: #AAAAAA;
+            --accent-primary: #3B82F6;
+            --accent-primary-hover: #2563EB;
+            --accent-secondary: #333333;
+            --border-color: #333333;
+            --success: #28a745;
+            --error: #ef4444;
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        body { 
+            font-family: var(--font-main); 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 1rem; 
+            background-color: var(--bg-primary); 
+            color: var(--text-primary); 
+        }
+        .hidden { display: none !important; }
+        header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 1rem 0; 
+            border-bottom: 1px solid var(--border-color); 
+            margin-bottom: 2rem; 
+        }
+        header h1 { margin: 0; font-size: 1.5rem; cursor: pointer; font-weight: 700; }
+        .section { background: var(--bg-secondary); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 1.5rem; }
+        
+        button, .button { 
+            padding: 0.75rem 1.5rem; 
+            border-radius: 8px; 
+            border: 1px solid transparent; 
+            background-color: var(--accent-primary); 
+            color: white; 
+            font-size: 0.9rem; 
+            font-weight: 600;
+            cursor: pointer; 
+            transition: all 0.2s; 
+            text-decoration: none; 
+            display: inline-block; 
+        }
+        button:hover, .button:hover { background-color: var(--accent-primary-hover); }
+        .button-secondary {
+             background-color: transpar<h3>Balance & Transactions</h3>
+
+ent;
+             border-color: var(--accent-secondary);
+             color: var(--text-primary);
+        }
+        .button-secondary:hover {
+            background-color: var(--accent-secondary);
+            border-color: var(--accent-secondary);
+        }
+        button:disabled { background-color: #333; color: #666; border-color: #444; cursor: not-allowed; }
+        
+        #wallet-widget { display: flex; align-items: center; gap: 1rem; }
+        #wallet-info p { margin: 0; padding: 0.6rem 1rem; background-color: var(--bg-secondary); border-radius: 20px; font-size: 0.8rem; font-family: monospace; word-break: break-all; white-space: normal; }
+        #logout-btn { background: #B91C1C; color: white; border-color: transparent; }
+        #logout-btn:hover { background: #991B1B; }
+        
+        main h2 { text-align: center; font-size: 2rem; font-weight: 700; margin-bottom: 2rem; }
+        #collections-grid, #my-nfts-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+            gap: 1rem; /* Reducimos el espacio entre tarjetas para un look más compacto */
+        }
+        
+        .card { 
+            background: var(--bg-secondary); 
+            border-radius: 12px; 
+            border: 1px solid var(--border-color);
+            overflow: hidden; 
+            transition: transform 0.2s, box-shadow 0.2s; 
+            display: flex; flex-direction: column; 
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-color: var(--accent-primary); }
+        .card img { 
+            width: 100%; 
+            aspect-ratio: 1 / 1; 
+            object-fit: cover; 
+            background-color: var(--bg-tertiary);
+            image-rendering: -webkit-optimize-contrast; /* For Chrome/Safari */
+            image-rendering: crisp-edges; /* For Firefox */
+            image-rendering: pixelated; /* The new standard */
+        }
+        .card-info { padding: 1rem; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-info {
+    padding: 1rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.card-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+.card-title {
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: 600;
+    /* Para evitar que el texto largo desplace el ranking */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.card-rarity {
+    margin: 0;
+    font-size: 0.5rem;
+    font-weight: bold;
+    color: var(--accent-primary);
+    background-color: rgba(59, 130, 246, 0.1);
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+.card-price {
+    margin: 0;
+    font-weight: bold;
+    color: var(--success);
+    font-size: 0.8rem;
+    text-align: right;
+    align-self: flex-end; /* Alinea el precio a la derecha al final */
+}
+        .nft-card-actions { margin-top: 1rem; }
+        .nft-card .price { font-weight: bold; color: var(--success); margin-bottom: 0.5rem; display: block; }
+        
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: .5rem; font-weight: 600; color: var(--text-secondary); }
+        .form-group input, .form-group textarea { 
+            width: 100%; 
+            padding: 0.75rem; 
+            box-sizing: border-box; 
+            border-radius: 8px; 
+            border: 1px solid var(--border-color); 
+            font-size: 1rem; 
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        #modal-content { position: relative; background: var(--bg-secondary); padding: 2rem; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); border: 1px solid var(--border-color); }
+        #modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; padding: 0.5rem 1rem; border-radius: 8px; color: var(--text-secondary); font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s, color 0.2s; }
+
+        #modal-close:hover { background-color: var(--bg-tertiary); color: var(--text-primary); }
+        #modal-content input, #modal-content textarea, #modal-content button { width: 100%; padding: 0.75rem; box-sizing: border-box; border-radius: 8px; border: 1px solid var(--border-color); font-size: 1rem; margin-top: 0.5rem; }
+        #modal-content button { margin-top: 1rem; }
+        .error { color: var(--error); font-weight: bold; margin-top: 1rem; min-height: 1.2em; text-align: center; }
+        #mnemonic-display { background: var(--bg-tertiary); padding: 1rem; border: 1px dashed var(--border-color); font-family: monospace; word-spacing: 0.5rem; text-align: center; margin-bottom: 1rem; border-radius: 8px; }
+        hr { border: none; border-top: 1px solid var(--border-color); }
+        
+
+        
+    .collection-layout.layout-active {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+
+        .collection-layout.layout-active #filters-container {
+            flex: 0 0 250px;
+        }
+
+        .collection-layout.layout-active #collections-grid {
+            flex: 1;
+        }
+    #filters-container {
+    background-color: var(--bg-secondary);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    }
+    .accordion-item {
+        border-bottom: 1px solid var(--border-color);
+    }
+    .accordion-item:last-child {
+        border-bottom: none;
+    }
+    .accordion-header {
+        width: 100%;
+        background: none;
+        border: none;
+        text-align: left;
+        padding: 1rem 0.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .accordion-header:hover {
+        background-color: var(--bg-tertiary);
+    }
+    .accordion-icon {
+        font-size: 1.2rem;
+        transition: transform 0.3s ease;
+    }
+    .accordion-content {
+        max-height: 0;
+        overflow-y: auto; /* Permite scroll si el contenido es muy largo */
+        transition: max-height 0.3s ease-out;
+        padding: 0 0.5rem;
+    }
+    .accordion-item.active .accordion-content {
+        max-height: 250px; /* Altura máxima cuando está abierto */
+        padding-bottom: 1rem;
+    }
+    .accordion-item.active .accordion-icon {
+        transform: rotate(45deg);
+    }
+
+    .sort-options-container {
+        padding: 0.5rem 0.5rem 1rem 0.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .sort-option {
+        display: flex;
+        align-items: center;
+    }
+    .sort-option input[type="radio"] {
+        margin-right: 0.75rem;
+        width: 16px;
+        height: 16px;
+        accent-color: var(--accent-primary); /* Moderno, para dar color al radio button */
+    }
+    .sort-option label {
+        color: var(--text-secondary);
+        cursor: pointer;
+        flex: 1;
+    }
+
+    .filter-option {
+        display: flex;
+        align-items: center;
+        padding: 0.4rem 0;
+    }
+    .filter-option input {
+        margin-right: 0.75rem;
+        width: 16px;
+        height: 16px;
+    }
+    .filter-option label {
+        color: var(--text-secondary);
+        cursor: pointer;
+        flex: 1;
+    }
+    .attributes-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        font-size: 0.8rem;
+    }
+    .attribute-tag {
+        background-color: var(--bg-tertiary);
+        padding: 0.4rem 0.6rem;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+        text-align: center;
+    }
+    .rarity-info {
+        font-weight: bold;
+        color: var(--accent-primary);
+        margin: 0.5rem 0 0;
+    }
+
+    .nft-modal-layout {
+        display: flex;
+        gap: 2rem;
+        align-items: flex-start;
+    }
+    .nft-modal-image-wrapper {
+        flex: 1; /* Ocupa la mitad del espacio */
+        background-color: var(--bg-tertiary);
+        border-radius: 8px;
+        min-width: 200px; 
+        min-height: 200px; 
+        display: block; 
+    }
+    .nft-modal-image-wrapper img {
+        width: 100%;
+        height: 100%;
+        border-radius: 8px;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        display: block;
+        image-rendering: pixelated;
+        
+    }
+    .nft-modal-info {
+        flex: 1; /* Ocupa la otra mitad */
+        display: flex;
+        flex-direction: column;
+    }
+    .modal-nft-name {
+        margin: 0 0 0.5rem 0;
+    }
+    .modal-nft-rarity {
+        margin: 0 0 1.5rem 0;
+    }
+    .modal-section {
+        margin-bottom: 1.5rem;
+    }
+    .modal-section h3 {
+        margin: 0 0 0.5rem 0;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .modal-nft-price {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: var(--success);
+        margin: 0;
+    }
+    .modal-nft-actions {
+        margin-top: auto; /* Empuja las acciones al final */
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    .modal-nft-actions button {
+        flex-grow: 1; /* Los botones crecen para ocupar el espacio */
+    }
+
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 id="brand-title">Hyper NFT Market</h1>
+        <div id="wallet-widget">
+            <button id="connect-wallet-btn" class="button">Connect Wallet</button>
+            <div id="wallet-info" class="hidden">
+                <p><strong>Balance: <span id="user-tap-balance">0.00</span> TAP</strong></p>
+                <p id="wallet-address-display"></p>
+                <button id="my-wallet-btn" class="button button-secondary">My Wallet</button>
+                <button id="logout-btn">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div id="status-message" style="text-align: center; color: var(--text-secondary); margin-bottom: 1rem;"></div>
+        <div id="collections-view">
+            <div style="display: flex; align-items: center; margin-bottom: 2rem;">
+                <button id="back-to-collections-btn" class="button-secondary hidden" style="margin-right: 1rem;">← Back</button>
+                <h2 id="view-title" style="margin: 0; text-align: left;">Collections</h2>
+            </div>
+            <div id="collection-layout-wrapper" class="collection-layout">
+                <div id="filters-container"></div>
+                <div id="collections-grid"></div>
+            </div>
+        </div> <div id="my-wallet-view" class="hidden">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        
+        <button id="back-to-marketplace-btn-wallet" class="button button-secondary">← Back to Marketplace</button>
+        <!-- El título H2 ahora está mejor alineado -->
+        <h2 style="margin: 0;">My Wallet</h2>
+        <!-- Dejamos un espacio vacío a la derecha para centrar el título, o podrías poner otro botón aquí -->
+        <div></div> 
+    </div>
+    
+    <div class="section">
+        <h3>Balance & Transactions</h3>
+        <p>Marketplace Address for Deposits: <strong id="marketplace-address">Loading...</strong></p>
+        <hr style="margin: 1.9rem 0;">
+        <div class="form-group">
+            <label for="withdrawal-amount">Amount to Withdraw</label>
+            <input type="text" id="withdrawal-amount" placeholder="e.g. 50.0">
+        </div>
+        <button id="request-withdrawal-btn" class="button">Request Withdrawal</button>
+    </div>
+
+    <div class="section">
+        <h3>Mint a New NFT</h3>
+        <div class="form-group">
+            <label for="mint-file-input">Select a file to mint</label>
+            <input type="file" id="mint-file-input" style="border:none; padding-left:0;">
+        </div>
+        <button id="mint-nft-btn" class="button">Mint NFT</button>
+    </div>
+
+    <div class="section">
+        <h3>Security & DApp</h3>
+        <p id="security-info-text">You must authorize the DApp to list, buy, or mint NFTs.</p>
+        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+            <button id="authorize-operator-btn" class="button">Authorize DApp</button>
+            <button id="revoke-operator-btn" class="button-secondary hidden">Revoke DApp</button>
+            <button id="forget-wallet-btn" class="button-secondary" style="border-color: var(--error); color: var(--error);">Forget Wallet</button>
+        </div>
+        <hr style="margin: 1.5rem 0;">
+        <button id="view-seed-btn" class="button-secondary">View Recovery Phrase</button>
+    </div>
+    
+    <div class="section">
+        
+    <h3>My Content</h3>
+    <div id="my-nfts-grid"></div>   
+    </div>
+</div>
+    </main>
+    
+    <div id="modal-overlay" class="hidden">
+        <div id="modal-content">
+            <button id="modal-close">Close</button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+    
+    <template id="template-initial-options">
+        <h3>Connect Wallet</h3>
+        <button id="create-wallet-btn">Create New Wallet</button>
+        <button id="restore-wallet-btn" class="button-secondary">Restore with Seed Phrase</button>
+    </template>
+    <template id="template-unlock-view">
+        <h3>Unlock Wallet</h3>
+        <p>Enter your password to unlock your saved session.</p>
+        <input type="password" id="unlock-password" placeholder="Session password">
+        <button id="unlock-btn">Unlock</button>
+        <p class="error"></p>
+    </template>
+    <template id="template-create-view">
+        <h3>New Wallet Created</h3>
+        <p><strong>IMPORTANT!</strong> Save this phrase in a safe place. You will not be able to recover it if you lose it.</p>
+        <div id="mnemonic-display"></div>
+        <p>Create a password for this session:</p>
+        <input type="password" id="create-password" placeholder="Session password (min. 8 characters)">
+        <button id="confirm-creation-btn">I've saved my phrase, Confirm & Enter</button>
+        <p class="error"></p>
+    </template>
+    <template id="template-restore-view">
+        <h3>Restore Wallet</h3>
+        <textarea id="restore-mnemonic" rows="3" placeholder="Enter your 24-word seed phrase..."></textarea>
+        <p>Create or enter the password for this session:</p>
+        <input type="password" id="restore-password" placeholder="Session password (min. 8 characters)">
+        <button id="confirm-restore-btn">Restore & Enter</button>
+        <p class="error"></p>
+    </template>
+    <template id="template-create-collection">
+        <div class="modal-content">
+            <h2>Create a New Collection</h2>
+            <p>Fill in the details for your new collection. Both a banner image and a manifest JSON file are required.</p>
+        
+            <div class="form-group">
+                <label for="collection-name">Collection Name</label>
+                <input type="text" id="collection-name" placeholder="e.g., Awesome Apes">
+            </div>
+
+            <div class="form-group">
+                <label for="collection-description">Description</label>
+                <textarea id="collection-description" rows="3" placeholder="A short description of your collection."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="collection-banner">Banner Image (PNG, JPG)</label>
+                <input type="file" id="collection-banner" accept="image/png, image/jpeg">
+            </div>
+
+            <div class="form-group">
+                <label for="collection-manifest">Manifest File (JSON)</label>
+                <input type="file" id="collection-manifest" accept=".json">
+                <small>The manifest must be a JSON file with an "items" array listing the file_ids of the NFTs in this collection.</small>
+            </div>
+
+            <button id="confirm-create-collection-btn" class="button">Create Collection</button>
+            <p class="error" style="color: var(--error);"></p>
+        </div>
+    </template>
+    <template id="template-view-seed">
+        <h3>View Recovery Phrase</h3>
+        <p>For your security, please enter your password to see your recovery phrase.</p>
+        <div class="form-group">
+            <input type="password" id="view-seed-password" placeholder="Session password">
+        </div>
+        <button id="confirm-view-seed-btn">Confirm and View</button>
+        <div id="seed-phrase-container" class="hidden" style="margin-top: 1rem;">
+            <p><strong>Save this phrase in a safe place and never share it:</strong></p>
+            <div id="seed-phrase-display" style="background: var(--bg-tertiary); padding: 1rem; border: 1px dashed var(--border-color); font-family: monospace; word-spacing: 0.5rem; text-align: center;"></div>
+        </div>
+        <p class="error"></p>
+    </template>
+    <template id="template-nft-details">
+        <div class="nft-modal-layout">
+            <div class="nft-modal-image-wrapper">
+                <img src="" alt="NFT Image">
+            </div>
+            <div class="nft-modal-info">
+                <h2 class="modal-nft-name"></h2>
+                <p class="modal-nft-rarity rarity-info"></p>
+                
+                <div class="modal-section">
+                    <h3>Price</h3>
+                    <p class="modal-nft-price">Not listed</p>
+                </div>
+
+                <div class="modal-section">
+                    <h3>Attributes</h3>
+                    <div class="modal-nft-attributes attributes-grid"></div>
+                </div>
+
+                <div class="modal-nft-actions">
+                    </div>
+            </div>
+        </div>
+    </template>
+    <script type="module">
+        try {
+            const { generateMnemonic, validateMnemonic, mnemonicToSeedSync } = await import('https://esm.sh/@scure/bip39@1.2.1');
+            const { wordlist } = await import('https://esm.sh/@scure/bip39@1.2.1/wordlists/english');
+            window.bip39 = {
+                generateMnemonic: () => generateMnemonic(wordlist, 256),
+                validateMnemonic: (mnemonic) => validateMnemonic(mnemonic, wordlist),
+                mnemonicToSeedSync: (mnemonic) => mnemonicToSeedSync(mnemonic)
+            };
+            window.dispatchEvent(new CustomEvent('libs-ready'));
+        } catch (error) {
+            console.error("Critical error loading BIP39:", error);
+            document.body.innerHTML = '<h1 style="color:red;">Critical error loading BIP39. Cannot continue.</h1>';
+        }
+    </script>
+    <script src="nacl.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
