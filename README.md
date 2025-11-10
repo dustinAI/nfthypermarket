@@ -4,7 +4,7 @@ A decentralized peer-to-peer marketplace for NFT artists and collectors that run
 
 ## 🔗 Project Link
 
-**Repository:** https://github.com/dustinAI/HYPERMarketNFT-P2P
+**Repository:** https://github.com/dustinAI/nfthypermarket
 
 ## 📖 Description
 
@@ -27,7 +27,7 @@ This project is **not built on Pear**, but it runs locally and privately on your
 
 2. **Clone this repo and navigate into it**:
    ```bash
-   git clone https://github.com/dustinAI/HYPERMarketNFT-P2P
+   git clone https://github.com/dustinAI/nfthypermarket
    cd HYPERMarketNFT-P2P
    ```
 
