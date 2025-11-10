@@ -28,7 +28,7 @@ This project is **not built on Pear**, but it runs locally and privately on your
 2. **Clone this repo and navigate into it**:
    ```bash
    git clone https://github.com/dustinAI/nfthypermarket
-   cd HYPERMarketNFT-P2P
+   cd NFTHyperMarket
    ```
 
 3. **Install dependencies**:
